@@ -45,49 +45,15 @@ int main()
 
 
 
-    //GLuint vertexShader;
-    //vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    //glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-    //glCompileShader(vertexShader);
-
-    //int  vertexShaderSuccess;
-    //char infoLog[512];
-    //glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &vertexShaderSuccess);
-    //if (!vertexShaderSuccess)
-    //{
-    //    glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-    //    std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
-    //}
-
-    //GLuint fragmentShader;
-    //fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    //glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    //glCompileShader(fragmentShader);
-
-    //GLuint shaderProgram;
-    //shaderProgram = glCreateProgram();
-    //glAttachShader(shaderProgram, vertexShader);
-    //glAttachShader(shaderProgram, fragmentShader);
-    //glLinkProgram(shaderProgram);
-
-    //int shaderProgramSuccess;
-    //glGetProgramiv(shaderProgram, GL_LINK_STATUS, &shaderProgramSuccess);
-    //if (!shaderProgramSuccess) {
-    //    glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-    //    std::cout << "ERROR::SHADER_PROGRAM::LINK_FAILED\n" << infoLog << std::endl;
-    //}
-    //glDeleteShader(vertexShader);
-    //glDeleteShader(fragmentShader);
-
     // program.exe is located under out
     Shader cShader("..\\..\\..\\src\\vertexShader", "..\\..\\..\\src\\fragmentShader");
 
     GLfloat vertices[] = {
         // positions          // colors           // texture coords
-         0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
-         0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
+         0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   2.0f, 2.0f, // top right
+         0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   2.0f, 0.0f, // bottom right
         -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
-        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left 
+        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 2.0f  // top left 
     };
     GLuint indices[] = {
         0, 1, 3, // first triangle
@@ -118,9 +84,11 @@ int main()
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
-    unsigned int texture;
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture); // all upcoming GL_TEXTURE_2D operations now have effect on this texture object
+    stbi_set_flip_vertically_on_load(true);
+
+    unsigned int textureContainer[2];
+    glGenTextures(2, textureContainer);
+    glBindTexture(GL_TEXTURE_2D, textureContainer[0]); // all upcoming GL_TEXTURE_2D operations now have effect on this texture object
     // set the texture wrapping parameters
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -142,6 +110,31 @@ int main()
     stbi_image_free(data);
 
 
+    glBindTexture(GL_TEXTURE_2D, textureContainer[1]); // all upcoming GL_TEXTURE_2D operations now have effect on this texture object
+    // set the texture wrapping parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // set texture filtering parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    data = stbi_load("..\\..\\..\\textures\\awesomeface.png", &width, &height, &nrChannels, 0);
+    if (data)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+    {
+        std::cout << "Failed to load texture" << std::endl;
+    }
+    stbi_image_free(data);
+
+
+    cShader.use();
+    glUniform1i(glGetUniformLocation(cShader.getProgramID(), "texture1"), 0);
+    glUniform1i(glGetUniformLocation(cShader.getProgramID(), "texture2"), 1);
+
     // render loop
     while (!glfwWindowShouldClose(window))
     {
@@ -152,8 +145,10 @@ int main()
         glClearColor(0.1f, 0.001f, 0.2f, 0.5f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-
-        glBindTexture(GL_TEXTURE_2D, texture);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, textureContainer[0]);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, textureContainer[1]);
 
         //glUseProgram(shaderProgram);
         cShader.use();
