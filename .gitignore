@@ -2,4 +2,6 @@
 glad/*
 glfw-3.3.8/*
 out/*
+build/*
+src/stb_image*
 CMakeSettings.json

@@ -2,12 +2,15 @@
 
 project(lab1)
 
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED)
+
 # Download glad/glfw at configure time
 
 add_executable(program
   "src/lab1.cpp"
   "glad/src/glad.c"
-  )
+   "src/ShaderClass.hpp" "src/ShaderClass.cpp")
 
 find_package(OpenGL REQUIRED)
 add_subdirectory("glfw-3.3.8")
