@@ -15,6 +15,7 @@ add_executable(program
 
 find_package(OpenGL REQUIRED)
 add_subdirectory("glfw-3.3.8")
+add_subdirectory("glm")
 
 target_include_directories(program PUBLIC
   ${OPENGL_INCLUDE_DIRS}
@@ -22,5 +23,6 @@ target_include_directories(program PUBLIC
   )
 target_link_libraries(program
   glfw
+  glm
   ${OPENGL_LIBRARIES}
   )
