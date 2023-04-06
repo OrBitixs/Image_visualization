@@ -11,7 +11,9 @@ add_executable(program
   "src/lab1.cpp"
   "glad/src/glad.c"
    "src/ShaderClass.hpp" "src/ShaderClass.cpp"
-   "src/stb_image.cpp")
+   "src/stb_image.cpp"
+   "src/camera.cpp"
+   )
 
 find_package(OpenGL REQUIRED)
 add_subdirectory("glfw-3.3.8")
