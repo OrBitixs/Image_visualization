@@ -2,6 +2,7 @@
 #include <GLFW/glfw3.h>
 
 #include <iostream>
+#include <vector>
 
 #include "ShaderClass.hpp"
 #include "camera.hpp"
@@ -17,10 +18,10 @@ void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
 
 // settings
-unsigned int SCR_WIDTH = 800;
-unsigned int SCR_HEIGHT = 800;
-//unsigned int SCR_WIDTH = 1920;
-//unsigned int SCR_HEIGHT = 1080;
+//unsigned int SCR_WIDTH = 800;
+//unsigned int SCR_HEIGHT = 800;
+unsigned int SCR_WIDTH = 1920;
+unsigned int SCR_HEIGHT = 1080;
 
 
 
@@ -72,7 +73,7 @@ int main()
     //};
 
     // cube with texture mapping drawn using drawArrays
-    GLfloat vertices[] = {
+    GLfloat cubeVertices[] = {
     // position           // texture coords
     -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
      0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
@@ -131,10 +132,14 @@ int main()
     };
 
     // indices for drawElements for rectangle
-    GLuint indices[] = {
+    GLuint rectangleIndices[] = {
         0, 1, 3, // first triangle
         1, 2, 3  // second triangle
     };
+
+    unsigned int verteciesPerAxis = 10;
+    std::vector<GLfloat> rVertices(verteciesPerAxis * verteciesPerAxis);
+
 
     GLuint VBO, VAO, EBO;
     glGenVertexArrays(1, &VAO);
@@ -144,10 +149,10 @@ int main()
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices, GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(rectangleIndices), rectangleIndices, GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
     glEnableVertexAttribArray(0);
@@ -251,7 +256,12 @@ int main()
         //glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
         camera.Inputs(window);
         // Updates and exports the camera matrix to the Vertex Shader
-        camera.Matrix(45.0f, 0.1f, 100.0f, cShader, "camMatrix");
+        camera.updateMatrix(45.0f, 0.1f, 100.0f, cShader, "camMatrix");
+        glm::mat4 aspectRatioScale = glm::mat4(1.0f);
+        aspectRatioScale = glm::scale(aspectRatioScale, glm::vec3(static_cast<float>(SCR_HEIGHT) / SCR_WIDTH, 1.0f, 1.0f));
+        unsigned int aspectRatioScaleLoc = glGetUniformLocation(cShader.getProgramID(), "aspectRatioScale");
+        glUniformMatrix4fv(aspectRatioScaleLoc, 1, GL_FALSE, glm::value_ptr(aspectRatioScale));
+
 
 
 
@@ -261,7 +271,7 @@ int main()
         {
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, cubePositions[i]);
-            model = glm::rotate(model, (float)(i * 20), glm::normalize(glm::vec3(1.0f, 0.6f, 0.2f)));
+            model = glm::rotate(model, static_cast<float>(i * 20), glm::normalize(glm::vec3(1.0f, 0.6f, 0.2f)));
             unsigned int modelLoc = glGetUniformLocation(cShader.getProgramID(), "model");
             glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
             glDrawArrays(GL_TRIANGLES, 0, 36);
