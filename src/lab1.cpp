@@ -6,6 +6,7 @@
 
 #include "ShaderClass.hpp"
 #include "camera.hpp"
+#include "rVectorClass.hpp"
 
 #include "stb_image.h"
 
@@ -137,8 +138,57 @@ int main()
         1, 2, 3  // second triangle
     };
 
-    unsigned int verteciesPerAxis = 10;
-    std::vector<GLfloat> rVertices(verteciesPerAxis * verteciesPerAxis);
+    unsigned int VERTICES_PER_AXIS = 100;
+
+    std::vector<glm::vec3> rVertices{
+        glm::vec3(1.0f, 1.0f, -1.0f),
+        glm::vec3(0.0f, 1.5f, -1.0f),
+        glm::vec3(-1.0f, 1.0f, -1.0f),
+        glm::vec3(1.0f, 1.0f,  0.0f),
+        glm::vec3(0.0f, 2.0f,  0.0f),
+        glm::vec3(-1.0f, 1.0f,  0.0f),
+        glm::vec3(1.0f, 1.0f,  1.0f),
+        glm::vec3(0.0f, 1.5f,  1.0f),
+        glm::vec3(-1.0f, 1.0f,  1.0f)
+    };
+    std::vector<std::pair<glm::vec3, glm::vec2>> firstBodyVerticesVector((VERTICES_PER_AXIS + 1) * (VERTICES_PER_AXIS + 1));
+    rVector firstBodyRVector(rVertices);
+    for (size_t u_iter = 0; u_iter <= VERTICES_PER_AXIS; u_iter++)
+    {
+        for (size_t v_iter = 0; v_iter <= VERTICES_PER_AXIS; v_iter++)
+        {
+            firstBodyVerticesVector[u_iter * (VERTICES_PER_AXIS + 1) + v_iter] = std::pair<glm::vec3, glm::vec2>{ firstBodyRVector.getVertex(static_cast<float>(u_iter) / VERTICES_PER_AXIS, static_cast<float>(v_iter) / VERTICES_PER_AXIS), glm::vec2(static_cast<float>(u_iter) / VERTICES_PER_AXIS, static_cast<float>(v_iter) / VERTICES_PER_AXIS)};
+        }
+    }
+
+    GLfloat* firstBodyVerticesArray = new GLfloat[firstBodyVerticesVector.size() * 5];
+    unsigned int VBOindex = 0;
+    for (auto &vec : firstBodyVerticesVector)
+    {
+        firstBodyVerticesArray[VBOindex++] = vec.first.x;
+        firstBodyVerticesArray[VBOindex++] = vec.first.y;
+        firstBodyVerticesArray[VBOindex++] = vec.first.z;
+        firstBodyVerticesArray[VBOindex++] = vec.second.x;
+        firstBodyVerticesArray[VBOindex++] = vec.second.y;
+    }
+
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+
+    unsigned int firstBodyEBOSize = 6 * (VERTICES_PER_AXIS) * (VERTICES_PER_AXIS);
+    unsigned int* firstBodyEBO = new unsigned int[firstBodyEBOSize];
+    unsigned int EBOindex = 0;
+    for (size_t u = 0; u < VERTICES_PER_AXIS; u++)
+    {
+        for (size_t v = 0; v < VERTICES_PER_AXIS; v++)
+        {
+            firstBodyEBO[EBOindex++] = u * (VERTICES_PER_AXIS + 1) + v;
+            firstBodyEBO[EBOindex++] = u * (VERTICES_PER_AXIS + 1) + v + 1;
+            firstBodyEBO[EBOindex++] = (u+1) * (VERTICES_PER_AXIS + 1) + v;
+            firstBodyEBO[EBOindex++] = (u + 1) * (VERTICES_PER_AXIS + 1) + v;
+            firstBodyEBO[EBOindex++] = (u + 1) * (VERTICES_PER_AXIS + 1) + v + 1;
+            firstBodyEBO[EBOindex++] = u * (VERTICES_PER_AXIS + 1) + v + 1;
+        }
+    }
 
 
     GLuint VBO, VAO, EBO;
@@ -149,10 +199,10 @@ int main()
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * VBOindex, firstBodyVerticesArray, GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(rectangleIndices), rectangleIndices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLfloat)* EBOindex, firstBodyEBO, GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
     glEnableVertexAttribArray(0);
@@ -274,7 +324,8 @@ int main()
             model = glm::rotate(model, static_cast<float>(i * 20), glm::normalize(glm::vec3(1.0f, 0.6f, 0.2f)));
             unsigned int modelLoc = glGetUniformLocation(cShader.getProgramID(), "model");
             glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-            glDrawArrays(GL_TRIANGLES, 0, 36);
+            //glDrawArrays(GL_TRIANGLES, 0, VBOindex);
+            glDrawElements(GL_TRIANGLES, EBOindex, GL_UNSIGNED_INT, 0);
         }
 
         //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -303,6 +354,4 @@ void framebufferSizeCallback(GLFWwindow* window, int width, int height)
     SCR_HEIGHT = height;
     glViewport(0, 0, width, height);
 }
-
-
 
