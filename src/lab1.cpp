@@ -4,7 +4,7 @@
 #include <iostream>
 
 #include "ShaderClass.hpp"
-//#include "camera.hpp"
+#include "camera.hpp"
 
 #include "stb_image.h"
 
@@ -18,7 +18,9 @@ void processInput(GLFWwindow* window);
 
 // settings
 unsigned int SCR_WIDTH = 800;
-unsigned int SCR_HEIGHT = 600;
+unsigned int SCR_HEIGHT = 800;
+//unsigned int SCR_WIDTH = 1920;
+//unsigned int SCR_HEIGHT = 1080;
 
 
 
@@ -32,7 +34,10 @@ int main()
 
 
     // glfw window creation
+    // window
     GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "AkaWindow", NULL, NULL);
+    // full screen
+    //GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "AkaWindow", glfwGetPrimaryMonitor(), NULL);
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -41,6 +46,8 @@ int main()
     }
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
+
+
 
     // glad: load all OpenGL function pointers
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -202,9 +209,19 @@ int main()
     glUniform1i(glGetUniformLocation(cShader.getProgramID(), "texture1"), 0);
     glUniform1i(glGetUniformLocation(cShader.getProgramID(), "texture2"), 1);
 
+
+    Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
+
+    float deltaTime = 0.0f;
+    float lastFrame = deltaTime;
     // render loop
     while (!glfwWindowShouldClose(window))
     {
+        float currentFrame = static_cast<float>(glfwGetTime());
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
+        camera.SetDelta(deltaTime);
         // input
         processInput(window);
 
@@ -220,18 +237,21 @@ int main()
         //glUseProgram(shaderProgram);
         cShader.use();
 
-        glm::mat4 model = glm::mat4(1.0f);
         glm::mat4 view = glm::mat4(1.0f);
         glm::mat4 projection = glm::mat4(1.0f);
 
         //model = glm::translate(model, glm::vec3(0.0f, 0.0f, -1.0f));
         //model = glm::rotate(model, (float)(glfwGetTime()), glm::normalize(glm::vec3(1.0f, 0.6f, 0.2f)));
-        view = glm::translate(view, glm::vec3(0.0f, 0.0f, -4.0f));
-        projection = glm::perspective(glm::radians(45.0f), (float)(SCR_WIDTH / SCR_HEIGHT), 0.1f, 100.0f);
-        unsigned int viewLoc = glGetUniformLocation(cShader.getProgramID(), "view");
-        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-        unsigned int projectionLoc = glGetUniformLocation(cShader.getProgramID(), "projection");
-        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
+        //view = camera.GetViewMatrix();
+        //projection = glm::perspective(glm::radians(60.0f), (float)(SCR_WIDTH / SCR_HEIGHT), 0.1f, 100.0f);
+        //unsigned int viewLoc = glGetUniformLocation(cShader.getProgramID(), "view");
+        //glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+        //unsigned int projectionLoc = glGetUniformLocation(cShader.getProgramID(), "projection");
+        //glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+        camera.Inputs(window);
+        // Updates and exports the camera matrix to the Vertex Shader
+        camera.Matrix(45.0f, 0.1f, 100.0f, cShader, "camMatrix");
 
 
 
@@ -241,7 +261,7 @@ int main()
         {
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, cubePositions[i]);
-            model = glm::rotate(model, (float)(i * 20 + glfwGetTime()), glm::normalize(glm::vec3(1.0f * sin(glfwGetTime()), 0.6f * cos(glfwGetTime()), 0.2f)));
+            model = glm::rotate(model, (float)(i * 20), glm::normalize(glm::vec3(1.0f, 0.6f, 0.2f)));
             unsigned int modelLoc = glGetUniformLocation(cShader.getProgramID(), "model");
             glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
             glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -264,13 +284,15 @@ void processInput(GLFWwindow* window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+
 }
 
-// glfw: whenever the window size changed (by OS or user resize) this callback function executes
 void framebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
     SCR_WIDTH = width;
     SCR_HEIGHT = height;
     glViewport(0, 0, width, height);
 }
+
+
 
