@@ -63,6 +63,7 @@ int main()
 
 
     // program.exe is located under out
+    Shader lightShader("..\\..\\..\\src\\vertexLightSourceShader", "..\\..\\..\\src\\fragmentLightSourceShader");
     Shader cShader("..\\..\\..\\src\\vertexShader", "..\\..\\..\\src\\fragmentShader");
 
     // rectangle with colors and texture mapping drawn using drawElements
@@ -74,51 +75,52 @@ int main()
     //    -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 2.0f  // top left 
     //};
 
-    //// cube with texture mapping drawn using drawArrays
-    //GLfloat cubeVertices[] = {
-    //// position           // texture coords
-    //-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-    // 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-    // 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-    // 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-    //-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-    //-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+    // cube with texture mapping drawn using drawArrays
+    GLfloat cubeVertices[] = {
+    // position           // texture coords
+    -0.5f, -0.5f, -0.5f,  //0.0f, 0.0f,
+     0.5f, -0.5f, -0.5f,  //1.0f, 0.0f,
+     0.5f,  0.5f, -0.5f,  //1.0f, 1.0f,
+     0.5f,  0.5f, -0.5f,  //1.0f, 1.0f,
+    -0.5f,  0.5f, -0.5f,  //0.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f,  //0.0f, 0.0f,
 
-    //-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-    // 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-    // 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-    // 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-    //-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-    //-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+    -0.5f, -0.5f,  0.5f,  //0.0f, 0.0f,
+     0.5f, -0.5f,  0.5f,  //1.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,  //1.0f, 1.0f,
+     0.5f,  0.5f,  0.5f,  //1.0f, 1.0f,
+    -0.5f,  0.5f,  0.5f,  //0.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f,  //0.0f, 0.0f,
 
-    //-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-    //-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-    //-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-    //-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-    //-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-    //-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    -0.5f,  0.5f,  0.5f,  //1.0f, 0.0f,
+    -0.5f,  0.5f, -0.5f,  //1.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f,  //0.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f,  //0.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f,  //0.0f, 0.0f,
+    -0.5f,  0.5f,  0.5f,  //1.0f, 0.0f,
 
-    // 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-    // 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-    // 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-    // 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-    // 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-    // 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,  //1.0f, 0.0f,
+     0.5f,  0.5f, -0.5f,  //1.0f, 1.0f,
+     0.5f, -0.5f, -0.5f,  //0.0f, 1.0f,
+     0.5f, -0.5f, -0.5f,  //0.0f, 1.0f,
+     0.5f, -0.5f,  0.5f,  //0.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,  //1.0f, 0.0f,
 
-    //-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-    // 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-    // 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-    // 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-    //-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-    //-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f,  //0.0f, 1.0f,
+     0.5f, -0.5f, -0.5f,  //1.0f, 1.0f,
+     0.5f, -0.5f,  0.5f,  //1.0f, 0.0f,
+     0.5f, -0.5f,  0.5f,  //1.0f, 0.0f,
+    -0.5f, -0.5f,  0.5f,  //0.0f, 0.0f,
+    -0.5f, -0.5f, -0.5f,  //0.0f, 1.0f,
 
-    //-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-    // 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-    // 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-    // 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-    //-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-    //-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-    //};
+    -0.5f,  0.5f, -0.5f,  //0.0f, 1.0f,
+     0.5f,  0.5f, -0.5f,  //1.0f, 1.0f,
+     0.5f,  0.5f,  0.5f,  //1.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,  //1.0f, 0.0f,
+    -0.5f,  0.5f,  0.5f,  //0.0f, 0.0f,
+    -0.5f,  0.5f, -0.5f//,  0.0f, 1.0f
+    };
+
 
     glm::vec3 cubePositions[] = {
         glm::vec3(0.0f,  0.0f,  0.0f),
@@ -137,8 +139,8 @@ int main()
         glm::vec3(4.0f,  4.0f,  4.0f),
         glm::vec3(2.0f,  5.0f,  3.0f),
         glm::vec3(2.5f,  2.0f,  2.0f),
-        glm::vec3(1.0f,  1.0f,  3.0f),
-        glm::vec3(3.3f,  5.5f,  3.3f),
+        glm::vec3(2.5f,  2.0f,  2.0f),
+        glm::vec3(3.0f,  -1.0f,  1.0f),
         glm::vec3(0.5f,  1.3f,  2.0f),
     };
 
@@ -257,7 +259,7 @@ int main()
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * firstVBOindex, bodyVerticesArray, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)* firstVBOindex, bodyVerticesArray, GL_STATIC_DRAW);
     delete[] bodyVerticesArray;
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
@@ -270,8 +272,32 @@ int main()
     glEnableVertexAttribArray(1);
 
 
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
+    //glBindBuffer(GL_ARRAY_BUFFER, 0);
+    //glBindVertexArray(0);
+
+
+
+    GLuint VBOl, VAOl, EBOl;
+    glGenVertexArrays(1, &VAOl);
+    glGenBuffers(1, &VBOl);
+    glGenBuffers(1, &EBOl);
+
+    glBindVertexArray(VAOl);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBOl);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices, GL_STATIC_DRAW);
+
+    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOl);
+    //glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLfloat) * EBOindex, bodyEBO, GL_STATIC_DRAW);
+    //delete[] bodyEBO;
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+    glEnableVertexAttribArray(0);
+    //glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+    //glEnableVertexAttribArray(1);
+
+
+
 
     stbi_set_flip_vertically_on_load(true);
 
@@ -329,7 +355,6 @@ int main()
 
     float deltaTime = 0.0f;
     float lastFrame = deltaTime;
-
     // render loop
     while (!glfwWindowShouldClose(window))
     {
@@ -350,6 +375,25 @@ int main()
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, textureContainer[1]);
 
+
+        glm::mat4 aspectRatioScale = glm::mat4(1.0f);
+        aspectRatioScale = glm::scale(aspectRatioScale, glm::vec3(static_cast<float>(SCR_HEIGHT) / SCR_WIDTH, 1.0f, 1.0f));
+
+
+        // drawing light source
+        lightShader.use();
+        glBindVertexArray(VAOl);
+        glm::mat4 modelLight = glm::mat4(1.0f);
+        glm::vec3 lightR = glm::vec3(5.0f, 5.0f, 5.0f);
+        glm::vec4 lightColor = glm::vec4(1.0f);
+        modelLight = glm::translate(modelLight, lightR);
+        camera.updateMatrix(45.0f, 0.1f, 100.0f, lightShader, "camMatrix");
+        glUniformMatrix4fv(glGetUniformLocation(lightShader.getProgramID(), "aspectRatioScale"), 1, GL_FALSE, glm::value_ptr(aspectRatioScale));
+        glUniformMatrix4fv(glGetUniformLocation(lightShader.getProgramID(), "model"), 1, GL_FALSE, glm::value_ptr(modelLight));
+        glUniform4fv(glGetUniformLocation(lightShader.getProgramID(), "lightColor"), 1, glm::value_ptr(lightColor));
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+
+
         //glUseProgram(shaderProgram);
         cShader.use();
 
@@ -368,16 +412,14 @@ int main()
         camera.Inputs(window);
         // Updates and exports the camera matrix to the Vertex Shader
         camera.updateMatrix(45.0f, 0.1f, 100.0f, cShader, "camMatrix");
-        glm::mat4 aspectRatioScale = glm::mat4(1.0f);
-        aspectRatioScale = glm::scale(aspectRatioScale, glm::vec3(static_cast<float>(SCR_HEIGHT) / SCR_WIDTH, 1.0f, 1.0f));
-        unsigned int aspectRatioScaleLoc = glGetUniformLocation(cShader.getProgramID(), "aspectRatioScale");
-        glUniformMatrix4fv(aspectRatioScaleLoc, 1, GL_FALSE, glm::value_ptr(aspectRatioScale));
-
+        glUniformMatrix4fv(glGetUniformLocation(cShader.getProgramID(), "aspectRatioScale"), 1, GL_FALSE, glm::value_ptr(aspectRatioScale));
+        glUniform4fv(glGetUniformLocation(lightShader.getProgramID(), "lightColor"), 1, glm::value_ptr(lightColor));
 
 
 
         glBindVertexArray(VAO);
 
+        // 10 bodies for fun)
         for (size_t i = 0; i < 1; i++)
         {
             glm::mat4 model = glm::mat4(1.0f);
