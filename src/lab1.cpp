@@ -141,26 +141,26 @@ int main()
     unsigned int VERTICES_PER_AXIS = 10;
 
     std::vector<glm::vec3> firstRVertices{
-        glm::vec3(1.0f, -0.2f, -1.0f),
+        glm::vec3(0.3f, -0.2f, -1.0f),
         glm::vec3(0.0f, 0.2f, -1.0f),
-        glm::vec3(-1.0f, -0.2f, -1.0f),
+        glm::vec3(-0.3f, -0.2f, -1.0f),
         glm::vec3(1.0f, 1.0f,  0.0f),
         glm::vec3(0.0f, 2.0f,  0.0f),
         glm::vec3(-1.0f, 1.0f,  0.0f),
-        glm::vec3(1.0f, 1.0f,  1.0f),
+        glm::vec3(0.8f, 1.0f,  1.0f),
         glm::vec3(0.0f, 1.5f,  1.0f),
-        glm::vec3(-1.0f, 1.0f,  1.0f)
+        glm::vec3(-0.8f, 1.0f,  1.0f)
     };
     std::vector<glm::vec3> secondRVertices{
-        glm::vec3(1.0f, 1.0f, -1.0f),
-        glm::vec3(0.0f, 1.5f, -1.0f),
-        glm::vec3(-1.0f, 1.0f, -1.0f),
-        glm::vec3(1.0f, 1.0f,  0.0f),
-        glm::vec3(0.0f, 2.0f,  0.0f),
-        glm::vec3(-1.0f, 1.0f,  0.0f),
-        glm::vec3(1.0f, 1.0f,  1.0f),
+        glm::vec3(0.8f, 1.0f,  1.0f),
         glm::vec3(0.0f, 1.5f,  1.0f),
-        glm::vec3(-1.0f, 1.0f,  1.0f)
+        glm::vec3(-0.8f, 1.0f,  1.0f),
+        glm::vec3(1.2f, 1.3f,  2.0f),
+        glm::vec3(0.0f, 2.3f,  2.0f),
+        glm::vec3(-1.2f, 1.3f,  2.0f),
+        glm::vec3(1.3f, 1.5f,  3.0f),
+        glm::vec3(0.0f, 2.5f,  3.0f),
+        glm::vec3(-1.3f, 1.5f,  3.0f)
     };
 
     std::vector<std::pair<glm::vec3, glm::vec2>> firstBodyVerticesVector((VERTICES_PER_AXIS + 1) * (VERTICES_PER_AXIS + 1));
@@ -173,25 +173,63 @@ int main()
         }
     }
 
-    GLfloat* firstBodyVerticesArray = new GLfloat[firstBodyVerticesVector.size() * 5];
-    unsigned int VBOindex = 0;
-    for (auto &vec : firstBodyVerticesVector)
+    std::vector<std::pair<glm::vec3, glm::vec2>> secondBodyVerticesVector((VERTICES_PER_AXIS + 1) * (VERTICES_PER_AXIS + 1));
+    rVector secondBodyRVector(secondRVertices);
+    for (size_t u_iter = 0; u_iter <= VERTICES_PER_AXIS; u_iter++)
     {
-        firstBodyVerticesArray[VBOindex++] = vec.first.x;
-        firstBodyVerticesArray[VBOindex++] = vec.first.y;
-        firstBodyVerticesArray[VBOindex++] = vec.first.z;
-        firstBodyVerticesArray[VBOindex++] = vec.second.x;
-        firstBodyVerticesArray[VBOindex++] = vec.second.y;
+        for (size_t v_iter = 0; v_iter <= VERTICES_PER_AXIS; v_iter++)
+        {
+            secondBodyVerticesVector[u_iter * (VERTICES_PER_AXIS + 1) + v_iter] = std::pair<glm::vec3, glm::vec2>{ secondBodyRVector.getVertex(static_cast<float>(u_iter) / VERTICES_PER_AXIS, static_cast<float>(v_iter) / VERTICES_PER_AXIS), glm::vec2(static_cast<float>(u_iter) / VERTICES_PER_AXIS + 1, static_cast<float>(v_iter) / VERTICES_PER_AXIS + 1) };
+        }
     }
+
+
+
+    GLfloat* firstBodyVerticesArray = new GLfloat[(firstBodyVerticesVector.size() + secondBodyVerticesVector.size()) * 5];
+    unsigned int fBVAsize = (firstBodyVerticesVector.size() + secondBodyVerticesVector.size()) * 5;
+    unsigned int firstVBOindex = 0;
+    for (auto& vec : firstBodyVerticesVector)
+    {
+        firstBodyVerticesArray[firstVBOindex++] = vec.first.x;
+        firstBodyVerticesArray[firstVBOindex++] = vec.first.y;
+        firstBodyVerticesArray[firstVBOindex++] = vec.first.z;
+        firstBodyVerticesArray[firstVBOindex++] = vec.second.x;
+        firstBodyVerticesArray[firstVBOindex++] = vec.second.y;
+    }
+    for (auto& vec : secondBodyVerticesVector)
+    {
+        firstBodyVerticesArray[firstVBOindex++] = vec.first.x;
+        firstBodyVerticesArray[firstVBOindex++] = vec.first.y;
+        firstBodyVerticesArray[firstVBOindex++] = vec.first.z;
+        firstBodyVerticesArray[firstVBOindex++] = vec.second.x;
+        firstBodyVerticesArray[firstVBOindex++] = vec.second.y;
+    }
+
+
+
+
+    //GLfloat* secondBodyVerticesArray = new GLfloat[secondBodyVerticesVector.size() * 5];
+    //unsigned int secondVBOindex = 0;
+    //for (auto& vec : secondBodyVerticesVector)
+    //{
+    //    secondBodyVerticesArray[secondVBOindex++] = vec.first.x;
+    //    secondBodyVerticesArray[secondVBOindex++] = vec.first.y;
+    //    secondBodyVerticesArray[secondVBOindex++] = vec.first.z;
+    //    secondBodyVerticesArray[secondVBOindex++] = vec.second.x;
+    //    secondBodyVerticesArray[secondVBOindex++] = vec.second.y;
+    //}
+
+
+
 
     //glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
 
-    unsigned int firstBodyEBOSize = 6 * (VERTICES_PER_AXIS) * (VERTICES_PER_AXIS);
+    unsigned int firstBodyEBOSize = 2 * 6 * VERTICES_PER_AXIS * VERTICES_PER_AXIS + 6 * VERTICES_PER_AXIS;
     unsigned int* firstBodyEBO = new unsigned int[firstBodyEBOSize];
     unsigned int EBOindex = 0;
 
     bool parity = true;
-    for (size_t u = 0; u < VERTICES_PER_AXIS; u++)
+    for (size_t u = 0; u < VERTICES_PER_AXIS*2+1; u++)
     {
         for (size_t v = 0; v < VERTICES_PER_AXIS; v++)
         {
@@ -226,10 +264,12 @@ int main()
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * VBOindex, firstBodyVerticesArray, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * firstVBOindex, firstBodyVerticesArray, GL_STATIC_DRAW);
+    //delete[] firstBodyVerticesArray;
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLfloat)* EBOindex, firstBodyEBO, GL_STATIC_DRAW);
+    //delete[] firstBodyEBO;
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
     glEnableVertexAttribArray(0);
