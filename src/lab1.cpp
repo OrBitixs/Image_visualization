@@ -7,6 +7,7 @@
 #include "ShaderClass.hpp"
 #include "camera.hpp"
 #include "rVectorClass.hpp"
+#include "animation.hpp"
 
 #include "stb_image.h"
 
@@ -73,63 +74,72 @@ int main()
     //    -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 2.0f  // top left 
     //};
 
-    // cube with texture mapping drawn using drawArrays
-    GLfloat cubeVertices[] = {
-    // position           // texture coords
-    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-     0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+    //// cube with texture mapping drawn using drawArrays
+    //GLfloat cubeVertices[] = {
+    //// position           // texture coords
+    //-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+    // 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+    // 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+    // 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+    //-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+    //-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
 
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-    -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+    //-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+    // 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+    // 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+    // 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+    //-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+    //-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
 
-    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-    -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    //-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    //-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+    //-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    //-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    //-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+    //-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
 
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-     0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    // 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    // 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+    // 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    // 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    // 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+    // 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
 
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-     0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    //-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    // 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+    // 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+    // 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+    //-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+    //-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
 
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-    -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-    };
+    //-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+    // 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+    // 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    // 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    //-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+    //-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+    //};
 
     glm::vec3 cubePositions[] = {
-    glm::vec3(0.0f,  0.0f,  0.0f),
-    glm::vec3(2.0f,  5.0f, -15.0f),
-    glm::vec3(-1.5f, -2.2f, -2.5f),
-    glm::vec3(-3.8f, -2.0f, -12.3f),
-    glm::vec3(2.4f, -0.4f, -3.5f),
-    glm::vec3(-1.7f,  3.0f, -7.5f),
-    glm::vec3(1.3f, -2.0f, -2.5f),
-    glm::vec3(1.5f,  2.0f, -2.5f),
-    glm::vec3(1.5f,  0.2f, -1.5f),
-    glm::vec3(-1.3f,  1.0f, -1.5f)
+        glm::vec3(0.0f,  0.0f,  0.0f),
+        glm::vec3(2.0f,  5.0f, -15.0f),
+        glm::vec3(-1.5f, -2.2f, -2.5f),
+        glm::vec3(-3.8f, -2.0f, -12.3f),
+        glm::vec3(2.4f, -0.4f, -3.5f),
+        glm::vec3(-1.7f,  3.0f, -7.5f),
+        glm::vec3(1.3f, -2.0f, -2.5f),
+        glm::vec3(1.5f,  2.0f, -2.5f),
+        glm::vec3(1.5f,  0.2f, -1.5f),
+        glm::vec3(-1.3f,  1.0f, -1.5f)
+    };
+
+    std::vector<glm::vec3> animationPath{
+        glm::vec3(4.0f,  4.0f,  4.0f),
+        glm::vec3(2.0f,  5.0f,  3.0f),
+        glm::vec3(2.5f,  2.0f,  2.0f),
+        glm::vec3(1.0f,  1.0f,  3.0f),
+        glm::vec3(3.3f,  5.5f,  3.3f),
+        glm::vec3(0.5f,  1.3f,  2.0f),
     };
 
     // indices for drawElements for rectangle
@@ -185,47 +195,30 @@ int main()
 
 
 
-    GLfloat* firstBodyVerticesArray = new GLfloat[(firstBodyVerticesVector.size() + secondBodyVerticesVector.size()) * 5];
-    unsigned int fBVAsize = (firstBodyVerticesVector.size() + secondBodyVerticesVector.size()) * 5;
+    GLfloat* bodyVerticesArray = new GLfloat[(firstBodyVerticesVector.size() + secondBodyVerticesVector.size()) * 5];
     unsigned int firstVBOindex = 0;
     for (auto& vec : firstBodyVerticesVector)
     {
-        firstBodyVerticesArray[firstVBOindex++] = vec.first.x;
-        firstBodyVerticesArray[firstVBOindex++] = vec.first.y;
-        firstBodyVerticesArray[firstVBOindex++] = vec.first.z;
-        firstBodyVerticesArray[firstVBOindex++] = vec.second.x;
-        firstBodyVerticesArray[firstVBOindex++] = vec.second.y;
+        bodyVerticesArray[firstVBOindex++] = vec.first.x;
+        bodyVerticesArray[firstVBOindex++] = vec.first.y;
+        bodyVerticesArray[firstVBOindex++] = vec.first.z;
+        bodyVerticesArray[firstVBOindex++] = vec.second.x;
+        bodyVerticesArray[firstVBOindex++] = vec.second.y;
     }
     for (auto& vec : secondBodyVerticesVector)
     {
-        firstBodyVerticesArray[firstVBOindex++] = vec.first.x;
-        firstBodyVerticesArray[firstVBOindex++] = vec.first.y;
-        firstBodyVerticesArray[firstVBOindex++] = vec.first.z;
-        firstBodyVerticesArray[firstVBOindex++] = vec.second.x;
-        firstBodyVerticesArray[firstVBOindex++] = vec.second.y;
+        bodyVerticesArray[firstVBOindex++] = vec.first.x;
+        bodyVerticesArray[firstVBOindex++] = vec.first.y;
+        bodyVerticesArray[firstVBOindex++] = vec.first.z;
+        bodyVerticesArray[firstVBOindex++] = vec.second.x;
+        bodyVerticesArray[firstVBOindex++] = vec.second.y;
     }
-
-
-
-
-    //GLfloat* secondBodyVerticesArray = new GLfloat[secondBodyVerticesVector.size() * 5];
-    //unsigned int secondVBOindex = 0;
-    //for (auto& vec : secondBodyVerticesVector)
-    //{
-    //    secondBodyVerticesArray[secondVBOindex++] = vec.first.x;
-    //    secondBodyVerticesArray[secondVBOindex++] = vec.first.y;
-    //    secondBodyVerticesArray[secondVBOindex++] = vec.first.z;
-    //    secondBodyVerticesArray[secondVBOindex++] = vec.second.x;
-    //    secondBodyVerticesArray[secondVBOindex++] = vec.second.y;
-    //}
-
-
 
 
     //glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
 
-    unsigned int firstBodyEBOSize = 2 * 6 * VERTICES_PER_AXIS * VERTICES_PER_AXIS + 6 * VERTICES_PER_AXIS;
-    unsigned int* firstBodyEBO = new unsigned int[firstBodyEBOSize];
+    unsigned int bodyEBOSize = 2 * 6 * VERTICES_PER_AXIS * VERTICES_PER_AXIS + 6 * VERTICES_PER_AXIS;
+    unsigned int* bodyEBO = new unsigned int[bodyEBOSize];
     unsigned int EBOindex = 0;
 
     bool parity = true;
@@ -235,21 +228,21 @@ int main()
         {
             if (parity)
             {
-                firstBodyEBO[EBOindex++] = u * (VERTICES_PER_AXIS + 1) + v;
-                firstBodyEBO[EBOindex++] = (u + 1) * (VERTICES_PER_AXIS + 1) + v;
-                firstBodyEBO[EBOindex++] = u * (VERTICES_PER_AXIS + 1) + v + 1;
-                firstBodyEBO[EBOindex++] = u * (VERTICES_PER_AXIS + 1) + v + 1;
-                firstBodyEBO[EBOindex++] = (u + 1) * (VERTICES_PER_AXIS + 1) + v;
-                firstBodyEBO[EBOindex++] = (u + 1) * (VERTICES_PER_AXIS + 1) + v + 1;
+                bodyEBO[EBOindex++] = u * (VERTICES_PER_AXIS + 1) + v;
+                bodyEBO[EBOindex++] = (u + 1) * (VERTICES_PER_AXIS + 1) + v;
+                bodyEBO[EBOindex++] = u * (VERTICES_PER_AXIS + 1) + v + 1;
+                bodyEBO[EBOindex++] = u * (VERTICES_PER_AXIS + 1) + v + 1;
+                bodyEBO[EBOindex++] = (u + 1) * (VERTICES_PER_AXIS + 1) + v;
+                bodyEBO[EBOindex++] = (u + 1) * (VERTICES_PER_AXIS + 1) + v + 1;
             }
             else
             {
-                firstBodyEBO[EBOindex++] = (1 + u) * (VERTICES_PER_AXIS + 1) - v-1;
-                firstBodyEBO[EBOindex++] = (1 + u + 1) * (VERTICES_PER_AXIS + 1) - v - 1 - 1;
-                firstBodyEBO[EBOindex++] = (1 + u + 1) * (VERTICES_PER_AXIS + 1) - v - 1;
-                firstBodyEBO[EBOindex++] = (1 + u) * (VERTICES_PER_AXIS + 1) - v - 1;
-                firstBodyEBO[EBOindex++] = (1 + u) * (VERTICES_PER_AXIS + 1) - v - 1 - 1;
-                firstBodyEBO[EBOindex++] = (1 + u + 1) * (VERTICES_PER_AXIS + 1) - v - 1 - 1;
+                bodyEBO[EBOindex++] = (1 + u) * (VERTICES_PER_AXIS + 1) - v-1;
+                bodyEBO[EBOindex++] = (1 + u + 1) * (VERTICES_PER_AXIS + 1) - v - 1 - 1;
+                bodyEBO[EBOindex++] = (1 + u + 1) * (VERTICES_PER_AXIS + 1) - v - 1;
+                bodyEBO[EBOindex++] = (1 + u) * (VERTICES_PER_AXIS + 1) - v - 1;
+                bodyEBO[EBOindex++] = (1 + u) * (VERTICES_PER_AXIS + 1) - v - 1 - 1;
+                bodyEBO[EBOindex++] = (1 + u + 1) * (VERTICES_PER_AXIS + 1) - v - 1 - 1;
             }
         }
         parity = !parity;
@@ -264,12 +257,12 @@ int main()
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * firstVBOindex, firstBodyVerticesArray, GL_STATIC_DRAW);
-    //delete[] firstBodyVerticesArray;
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * firstVBOindex, bodyVerticesArray, GL_STATIC_DRAW);
+    delete[] bodyVerticesArray;
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLfloat)* EBOindex, firstBodyEBO, GL_STATIC_DRAW);
-    //delete[] firstBodyEBO;
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLfloat)* EBOindex, bodyEBO, GL_STATIC_DRAW);
+    delete[] bodyEBO;
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
     glEnableVertexAttribArray(0);
@@ -284,14 +277,13 @@ int main()
 
     unsigned int textureContainer[2];
     glGenTextures(2, textureContainer);
-    glBindTexture(GL_TEXTURE_2D, textureContainer[0]); // all upcoming GL_TEXTURE_2D operations now have effect on this texture object
+    glBindTexture(GL_TEXTURE_2D, textureContainer[0]);
     // set the texture wrapping parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     // set texture filtering parameters
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    // load image, create texture and generate mipmaps
     int width, height, nrChannels;
     unsigned char* data = stbi_load("..\\..\\..\\textures\\container.jpg", &width, &height, &nrChannels, 0);
     if (data)
@@ -306,9 +298,9 @@ int main()
     stbi_image_free(data);
 
 
-    glBindTexture(GL_TEXTURE_2D, textureContainer[1]); // all upcoming GL_TEXTURE_2D operations now have effect on this texture object
+    glBindTexture(GL_TEXTURE_2D, textureContainer[1]);
     // set the texture wrapping parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     // set texture filtering parameters
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
@@ -333,9 +325,11 @@ int main()
 
 
     Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
+    Animation animation(animationPath);
 
     float deltaTime = 0.0f;
     float lastFrame = deltaTime;
+
     // render loop
     while (!glfwWindowShouldClose(window))
     {
@@ -384,7 +378,7 @@ int main()
 
         glBindVertexArray(VAO);
 
-        for (size_t i = 0; i < 10; i++)
+        for (size_t i = 0; i < 1; i++)
         {
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, cubePositions[i]);
@@ -394,6 +388,17 @@ int main()
             //glDrawArrays(GL_TRIANGLES, 0, VBOindex);
             glDrawElements(GL_TRIANGLES, EBOindex, GL_UNSIGNED_INT, 0);
         }
+
+        // drawing animated body
+        std::pair<glm::vec3, glm::vec3> posDirection = animation.getPosDirection(sin(glfwGetTime()) + 1);
+        glm::mat4 animationModel = glm::mat4(1.0f);
+        animationModel = glm::translate(animationModel, posDirection.first);
+        glm::vec3 bodyOrientation(0.0f, 0.0f, 1.0f);
+        animationModel = glm::rotate(animationModel, acosf(glm::dot(bodyOrientation, posDirection.second) / glm::length(bodyOrientation) / glm::length(posDirection.second)), glm::cross(bodyOrientation, posDirection.second));
+        glUniformMatrix4fv(glGetUniformLocation(cShader.getProgramID(), "model"), 1, GL_FALSE, glm::value_ptr(animationModel));
+        glDrawElements(GL_TRIANGLES, EBOindex, GL_UNSIGNED_INT, 0);
+
+
 
         //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
@@ -407,7 +412,6 @@ int main()
     return 0;
 }
 
-// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 void processInput(GLFWwindow* window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
