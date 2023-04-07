@@ -150,7 +150,7 @@ int main()
         1, 2, 3  // second triangle
     };
 
-    unsigned int VERTICES_PER_AXIS = 10;
+    unsigned int VERTICES_PER_AXIS = 100;
 
     std::vector<glm::vec3> firstRVertices{
         glm::vec3(0.3f, -0.2f, -1.0f),
@@ -181,7 +181,7 @@ int main()
     {
         for (size_t v_iter = 0; v_iter <= VERTICES_PER_AXIS; v_iter++)
         {
-            firstBodyVerticesVector[u_iter * (VERTICES_PER_AXIS + 1) + v_iter] = std::pair<glm::vec3, glm::vec2>{ firstBodyRVector.getVertex(static_cast<float>(u_iter) / VERTICES_PER_AXIS, static_cast<float>(v_iter) / VERTICES_PER_AXIS), glm::vec2(static_cast<float>(u_iter) / VERTICES_PER_AXIS, static_cast<float>(v_iter) / VERTICES_PER_AXIS)};
+            firstBodyVerticesVector[u_iter * (VERTICES_PER_AXIS + 1) + v_iter] = std::pair<glm::vec3, glm::vec2>{ firstBodyRVector.getVertex(static_cast<float>(u_iter) / VERTICES_PER_AXIS, static_cast<float>(v_iter) / VERTICES_PER_AXIS), glm::vec2(static_cast<float>(u_iter) / VERTICES_PER_AXIS , static_cast<float>(v_iter) / VERTICES_PER_AXIS)};
         }
     }
 
@@ -191,7 +191,7 @@ int main()
     {
         for (size_t v_iter = 0; v_iter <= VERTICES_PER_AXIS; v_iter++)
         {
-            secondBodyVerticesVector[u_iter * (VERTICES_PER_AXIS + 1) + v_iter] = std::pair<glm::vec3, glm::vec2>{ secondBodyRVector.getVertex(static_cast<float>(u_iter) / VERTICES_PER_AXIS, static_cast<float>(v_iter) / VERTICES_PER_AXIS), glm::vec2(static_cast<float>(u_iter) / VERTICES_PER_AXIS + 1, static_cast<float>(v_iter) / VERTICES_PER_AXIS + 1) };
+            secondBodyVerticesVector[u_iter * (VERTICES_PER_AXIS + 1) + v_iter] = std::pair<glm::vec3, glm::vec2>{ secondBodyRVector.getVertex(static_cast<float>(u_iter) / VERTICES_PER_AXIS, static_cast<float>(v_iter) / VERTICES_PER_AXIS), glm::vec2(static_cast<float>(u_iter) / VERTICES_PER_AXIS+1, static_cast<float>(v_iter) / VERTICES_PER_AXIS + 1) };
         }
     }
 
@@ -385,7 +385,7 @@ int main()
         glBindVertexArray(VAOl);
         glm::mat4 modelLight = glm::mat4(1.0f);
         glm::vec3 lightR = glm::vec3(5.0f, 5.0f, 5.0f);
-        glm::vec4 lightColor = glm::vec4(1.0f);
+        glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
         modelLight = glm::translate(modelLight, lightR);
         camera.updateMatrix(45.0f, 0.1f, 100.0f, lightShader, "camMatrix");
         glUniformMatrix4fv(glGetUniformLocation(lightShader.getProgramID(), "aspectRatioScale"), 1, GL_FALSE, glm::value_ptr(aspectRatioScale));
@@ -420,7 +420,7 @@ int main()
         glBindVertexArray(VAO);
 
         // 10 bodies for fun)
-        for (size_t i = 0; i < 1; i++)
+        for (size_t i = 0; i < 10; i++)
         {
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, cubePositions[i]);
