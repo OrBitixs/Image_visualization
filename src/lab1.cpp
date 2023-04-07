@@ -138,7 +138,7 @@ int main()
         1, 2, 3  // second triangle
     };
 
-    unsigned int VERTICES_PER_AXIS = 100;
+    unsigned int VERTICES_PER_AXIS = 10;
 
     std::vector<glm::vec3> rVertices{
         glm::vec3(1.0f, 1.0f, -1.0f),
@@ -177,16 +177,31 @@ int main()
     unsigned int firstBodyEBOSize = 6 * (VERTICES_PER_AXIS) * (VERTICES_PER_AXIS);
     unsigned int* firstBodyEBO = new unsigned int[firstBodyEBOSize];
     unsigned int EBOindex = 0;
+
+    bool parity = true;
     for (size_t u = 0; u < VERTICES_PER_AXIS; u++)
     {
         for (size_t v = 0; v < VERTICES_PER_AXIS; v++)
         {
-            firstBodyEBO[EBOindex++] = u * (VERTICES_PER_AXIS + 1) + v;
-            firstBodyEBO[EBOindex++] = u * (VERTICES_PER_AXIS + 1) + v + 1;
-            firstBodyEBO[EBOindex++] = (u+1) * (VERTICES_PER_AXIS + 1) + v;
-            firstBodyEBO[EBOindex++] = (u + 1) * (VERTICES_PER_AXIS + 1) + v;
-            firstBodyEBO[EBOindex++] = (u + 1) * (VERTICES_PER_AXIS + 1) + v + 1;
-            firstBodyEBO[EBOindex++] = u * (VERTICES_PER_AXIS + 1) + v + 1;
+            if (parity)
+            {
+                firstBodyEBO[EBOindex++] = u * (VERTICES_PER_AXIS + 1) + v;
+                firstBodyEBO[EBOindex++] = (u + 1) * (VERTICES_PER_AXIS + 1) + v;
+                firstBodyEBO[EBOindex++] = u * (VERTICES_PER_AXIS + 1) + v + 1;
+                firstBodyEBO[EBOindex++] = u * (VERTICES_PER_AXIS + 1) + v + 1;
+                firstBodyEBO[EBOindex++] = (u + 1) * (VERTICES_PER_AXIS + 1) + v;
+                firstBodyEBO[EBOindex++] = (u + 1) * (VERTICES_PER_AXIS + 1) + v + 1;
+            }
+            else
+            {
+                firstBodyEBO[EBOindex++] = (1 + u) * (VERTICES_PER_AXIS + 1) - (v-1);
+                firstBodyEBO[EBOindex++] = (1 + u + 1) * (VERTICES_PER_AXIS + 1) - (v - 1 - 1);
+                firstBodyEBO[EBOindex++] = (1 + u + 1) * (VERTICES_PER_AXIS + 1) - (v - 1);
+                firstBodyEBO[EBOindex++] = (1 + u) * (VERTICES_PER_AXIS + 1) - (v - 1);
+                firstBodyEBO[EBOindex++] = (1 + u) * (VERTICES_PER_AXIS + 1) - (v - 1 - 1);
+                firstBodyEBO[EBOindex++] = (1 + u + 1) * (VERTICES_PER_AXIS + 1) - (v - 1 - 1);
+            }
+            parity = !parity;
         }
     }
 
