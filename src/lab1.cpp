@@ -140,7 +140,18 @@ int main()
 
     unsigned int VERTICES_PER_AXIS = 10;
 
-    std::vector<glm::vec3> rVertices{
+    std::vector<glm::vec3> firstRVertices{
+        glm::vec3(1.0f, -0.2f, -1.0f),
+        glm::vec3(0.0f, 0.2f, -1.0f),
+        glm::vec3(-1.0f, -0.2f, -1.0f),
+        glm::vec3(1.0f, 1.0f,  0.0f),
+        glm::vec3(0.0f, 2.0f,  0.0f),
+        glm::vec3(-1.0f, 1.0f,  0.0f),
+        glm::vec3(1.0f, 1.0f,  1.0f),
+        glm::vec3(0.0f, 1.5f,  1.0f),
+        glm::vec3(-1.0f, 1.0f,  1.0f)
+    };
+    std::vector<glm::vec3> secondRVertices{
         glm::vec3(1.0f, 1.0f, -1.0f),
         glm::vec3(0.0f, 1.5f, -1.0f),
         glm::vec3(-1.0f, 1.0f, -1.0f),
@@ -151,8 +162,9 @@ int main()
         glm::vec3(0.0f, 1.5f,  1.0f),
         glm::vec3(-1.0f, 1.0f,  1.0f)
     };
+
     std::vector<std::pair<glm::vec3, glm::vec2>> firstBodyVerticesVector((VERTICES_PER_AXIS + 1) * (VERTICES_PER_AXIS + 1));
-    rVector firstBodyRVector(rVertices);
+    rVector firstBodyRVector(firstRVertices);
     for (size_t u_iter = 0; u_iter <= VERTICES_PER_AXIS; u_iter++)
     {
         for (size_t v_iter = 0; v_iter <= VERTICES_PER_AXIS; v_iter++)
@@ -194,15 +206,15 @@ int main()
             }
             else
             {
-                firstBodyEBO[EBOindex++] = (1 + u) * (VERTICES_PER_AXIS + 1) - (v-1);
-                firstBodyEBO[EBOindex++] = (1 + u + 1) * (VERTICES_PER_AXIS + 1) - (v - 1 - 1);
-                firstBodyEBO[EBOindex++] = (1 + u + 1) * (VERTICES_PER_AXIS + 1) - (v - 1);
-                firstBodyEBO[EBOindex++] = (1 + u) * (VERTICES_PER_AXIS + 1) - (v - 1);
-                firstBodyEBO[EBOindex++] = (1 + u) * (VERTICES_PER_AXIS + 1) - (v - 1 - 1);
-                firstBodyEBO[EBOindex++] = (1 + u + 1) * (VERTICES_PER_AXIS + 1) - (v - 1 - 1);
+                firstBodyEBO[EBOindex++] = (1 + u) * (VERTICES_PER_AXIS + 1) - v-1;
+                firstBodyEBO[EBOindex++] = (1 + u + 1) * (VERTICES_PER_AXIS + 1) - v - 1 - 1;
+                firstBodyEBO[EBOindex++] = (1 + u + 1) * (VERTICES_PER_AXIS + 1) - v - 1;
+                firstBodyEBO[EBOindex++] = (1 + u) * (VERTICES_PER_AXIS + 1) - v - 1;
+                firstBodyEBO[EBOindex++] = (1 + u) * (VERTICES_PER_AXIS + 1) - v - 1 - 1;
+                firstBodyEBO[EBOindex++] = (1 + u + 1) * (VERTICES_PER_AXIS + 1) - v - 1 - 1;
             }
-            parity = !parity;
         }
+        parity = !parity;
     }
 
 
